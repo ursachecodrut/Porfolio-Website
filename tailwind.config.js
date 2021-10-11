@@ -3,8 +3,12 @@ module.exports = {
 	darkMode: false, // or 'media' or 'class'
 	theme: {
 		extend: {
+			container: {
+				center: true,
+			},
 			colors: {
 				background: '#282a36',
+				terminalBar: '#1E1F28',
 				currentLine: '#44475a',
 				foreground: '#f8f8f2',
 				comment: '#6272a4',
