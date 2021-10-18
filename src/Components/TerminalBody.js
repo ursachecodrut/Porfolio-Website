@@ -4,14 +4,11 @@ import { NodesArray } from '../utils/dirsTree';
 const TerminalBody = () => {
 	const [workingDir, setWorkingDir] = useState('~');
 
-	const [dirsTree, setDirsTree] = useState(NodesArray);
-
 	const [currentCommand, setCurrentCommand] = useState('');
 	const [commandHistory, setCommandHistory] = useState([]);
 
 	const runCommand = (inputValue) => {
-		let id,
-			validCd = 0;
+		let id;
 
 		if (commandHistory.length !== 0) {
 			id = commandHistory[commandHistory.length - 1].id + 1;
@@ -19,10 +16,13 @@ const TerminalBody = () => {
 			id = 0;
 		}
 
+		//cd is working to single directory path
 		if (inputValue.startsWith('cd')) {
+			let validCd = 0;
 			const previosWorkingDir = workingDir;
 			let dirToCDIn = inputValue.split(' ')[1];
 			if (dirToCDIn === '..') {
+				validCd = 1;
 				let lastIndex = workingDir.lastIndexOf('/');
 				let wd = workingDir.substr(0, lastIndex);
 				setWorkingDir(wd);
@@ -46,10 +46,11 @@ const TerminalBody = () => {
 				previosWorkingDir,
 				command: inputValue,
 				result:
-					validCd == 1 ? '' : `cd: no such file or directory: ${dirToCDIn}`,
+					validCd === 1 ? '' : `cd: no such file or directory: ${dirToCDIn}`,
 				id: id,
 			});
 			setCommandHistory(newArray);
+			//ls working only on current directory
 		} else if (inputValue === 'ls') {
 			const previosWorkingDir = workingDir;
 			let result = '';
@@ -62,7 +63,7 @@ const TerminalBody = () => {
 						result = result.concat(`${dir.value} `);
 					}
 					for (let file of item.files) {
-						result = result.concat(`${file} `);
+						result = result.concat(`${file.fileName} `);
 					}
 				}
 			}
@@ -73,13 +74,29 @@ const TerminalBody = () => {
 				id,
 			});
 			setCommandHistory(newArray);
-		} else if (inputValue === 'cat') {
+		} else if (inputValue.startsWith('cat')) {
 			const previosWorkingDir = workingDir;
+			let result;
+			let fileToCat = inputValue.split(' ')[1];
+
+			let pathArray = workingDir.split('/');
+			let lastDir = pathArray[pathArray.length - 1];
+
+			for (let item of NodesArray) {
+				if (item.value === lastDir) {
+					for (let file of item.files) {
+						console.log(file);
+						if (file.fileName === fileToCat) {
+							result = file.fileContent;
+						}
+					}
+				}
+			}
 
 			let newArray = commandHistory.concat({
 				previosWorkingDir,
 				command: inputValue,
-				result: 'este cat',
+				result,
 				id: id,
 			});
 			setCommandHistory(newArray);
@@ -129,7 +146,10 @@ const TerminalBody = () => {
 					<div>
 						<span className="text-green">
 							codrut@portfolio:
-							<span className="text-purple">{x.previosWorkingDir}</span>
+							<span className="text-purple">
+								{x.previosWorkingDir}
+								<span className="text-foreground">$</span>
+							</span>
 						</span>
 
 						<span className="text-foreground"> {x.command}</span>
@@ -140,7 +160,10 @@ const TerminalBody = () => {
 			<div className="flex">
 				<span className="inline-flex text-green">
 					<span className="inline">codrut@portfolio:</span>
-					<span className="text-purple inline">{workingDir}</span>
+					<span className="text-purple inline">
+						{workingDir}
+						<span className="text-foreground">$</span>
+					</span>
 				</span>
 				<input
 					type="text"
