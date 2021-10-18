@@ -84,7 +84,7 @@ const TerminalBody = () => {
 					}
 				}
 
-				result = validCat === 1 ? '' : `cat: no such file: ${fileToCat}`;
+				result = validCat === 1 ? result : `cat: no such file: ${fileToCat}`;
 			} else if (inputValue.startsWith('./') && inputValue.endsWith('.sh')) {
 				let validScript = 0;
 				let projectScript = inputValue.substr(2, inputValue.length);
@@ -105,7 +105,7 @@ const TerminalBody = () => {
 					}
 				}
 
-				result = validScript === 1 ? '' : `no such file: ${projectScript}`;
+				result = validScript === 1 ? result : `no such file: ${projectScript}`;
 			} else if (!/\S/.test(inputValue)) {
 				result = '';
 			} else {
