@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { NodesArray } from '../utils/dirsTree';
 
 const TerminalBody = () => {
 	const [workingDir, setWorkingDir] = useState('~');
-
 	const [currentCommand, setCurrentCommand] = useState('');
 	const [commandHistory, setCommandHistory] = useState([]);
 
+	const terminalBody = useRef(null);
+
 	const runCommand = (inputValue) => {
 		let id;
+		let result = '';
 
 		if (commandHistory.length !== 0) {
 			id = commandHistory[commandHistory.length - 1].id + 1;
@@ -17,81 +19,92 @@ const TerminalBody = () => {
 		}
 
 		//cd is working to single directory path
-		if (inputValue.startsWith('cd')) {
-			let validCd = 0;
-			const previosWorkingDir = workingDir;
-			let dirToCDIn = inputValue.split(' ')[1];
-			if (dirToCDIn === '..') {
-				validCd = 1;
-				let lastIndex = workingDir.lastIndexOf('/');
-				let wd = workingDir.substr(0, lastIndex);
-				setWorkingDir(wd);
-			} else {
+		if (inputValue === 'clear') {
+			let newArray = [];
+			setCommandHistory(newArray);
+		} else {
+			if (inputValue.startsWith('cd')) {
+				let validCd = 0;
+				let dirToCDIn = inputValue.split(' ')[1];
+
+				if (dirToCDIn === '..') {
+					validCd = 1;
+					let lastIndex = workingDir.lastIndexOf('/');
+					let wd = workingDir.substr(0, lastIndex);
+					setWorkingDir(wd);
+				} else {
+					let pathArray = workingDir.split('/');
+					let lastDir = pathArray[pathArray.length - 1];
+
+					for (let item of NodesArray) {
+						if (item.value === lastDir) {
+							for (let dir of item.dirs) {
+								if (dir.value === dirToCDIn) {
+									console.log(`${workingDir}/${dirToCDIn}`);
+									setWorkingDir(`${workingDir}/${dirToCDIn}`);
+									validCd = 1;
+								}
+							}
+						}
+					}
+				}
+
+				result =
+					validCd === 1 ? '' : `cd: no such file or directory: ${dirToCDIn}`;
+			} else if (inputValue === 'ls') {
 				let pathArray = workingDir.split('/');
 				let lastDir = pathArray[pathArray.length - 1];
 
 				for (let item of NodesArray) {
 					if (item.value === lastDir) {
 						for (let dir of item.dirs) {
-							if (dir.value === dirToCDIn) {
-								setWorkingDir(`${workingDir}/${dirToCDIn}`);
-								validCd = 1;
+							result = result.concat(`${dir.value} `);
+						}
+						for (let file of item.files) {
+							result = result.concat(`${file.fileName} `);
+						}
+					}
+				}
+			} else if (inputValue.startsWith('cat')) {
+				let fileToCat = inputValue.split(' ')[1];
+
+				let pathArray = workingDir.split('/');
+				let lastDir = pathArray[pathArray.length - 1];
+
+				for (let item of NodesArray) {
+					if (item.value === lastDir) {
+						for (let file of item.files) {
+							console.log(file);
+							if (file.fileName === fileToCat) {
+								result = file.fileContent;
 							}
 						}
 					}
 				}
-			}
+			} else if (inputValue.startsWith('./') && inputValue.endsWith('.sh')) {
+				let projectScript = inputValue.substr(2, inputValue.length);
 
-			let newArray = commandHistory.concat({
-				previosWorkingDir,
-				command: inputValue,
-				result:
-					validCd === 1 ? '' : `cd: no such file or directory: ${dirToCDIn}`,
-				id: id,
-			});
-			setCommandHistory(newArray);
-			//ls working only on current directory
-		} else if (inputValue === 'ls') {
-			const previosWorkingDir = workingDir;
-			let result = '';
-			let pathArray = workingDir.split('/');
-			let lastDir = pathArray[pathArray.length - 1];
+				let pathArray = workingDir.split('/');
+				let lastDir = pathArray[pathArray.length - 1];
 
-			for (let item of NodesArray) {
-				if (item.value === lastDir) {
-					for (let dir of item.dirs) {
-						result = result.concat(`${dir.value} `);
-					}
-					for (let file of item.files) {
-						result = result.concat(`${file.fileName} `);
-					}
-				}
-			}
-			let newArray = commandHistory.concat({
-				previosWorkingDir,
-				command: inputValue,
-				result,
-				id,
-			});
-			setCommandHistory(newArray);
-		} else if (inputValue.startsWith('cat')) {
-			const previosWorkingDir = workingDir;
-			let result;
-			let fileToCat = inputValue.split(' ')[1];
-
-			let pathArray = workingDir.split('/');
-			let lastDir = pathArray[pathArray.length - 1];
-
-			for (let item of NodesArray) {
-				if (item.value === lastDir) {
-					for (let file of item.files) {
-						console.log(file);
-						if (file.fileName === fileToCat) {
-							result = file.fileContent;
+				for (let item of NodesArray) {
+					if (item.value === lastDir) {
+						for (let file of item.files) {
+							console.log(file);
+							if (file.fileName === projectScript) {
+								result = `open ${file.fileContent}`;
+								window.open(file.fileContent, '_blank');
+							}
 						}
 					}
 				}
+			} else if (!/\S/.test(inputValue)) {
+				result = '';
+			} else {
+				result = 'Command Not Found';
 			}
+
+			const previosWorkingDir = workingDir;
 
 			let newArray = commandHistory.concat({
 				previosWorkingDir,
@@ -99,47 +112,20 @@ const TerminalBody = () => {
 				result,
 				id: id,
 			});
-			setCommandHistory(newArray);
-		} else if (inputValue === 'mkdir') {
-			const previosWorkingDir = workingDir;
 
-			let newArray = commandHistory.concat({
-				previosWorkingDir,
-				command: inputValue,
-				result: 'este mkdir',
-				id: id,
-			});
-			setCommandHistory(newArray);
-		} else if (inputValue === 'clear') {
-			let newArray = [];
-			setCommandHistory(newArray);
-		} else if (!/\S/.test(inputValue)) {
-			const previosWorkingDir = workingDir;
-
-			let newArray = commandHistory.concat({
-				previosWorkingDir,
-				command: inputValue,
-				result: '',
-				id: id,
-			});
-			setCommandHistory(newArray);
-		} else {
-			const previosWorkingDir = workingDir;
-
-			let newArray = commandHistory.concat({
-				previosWorkingDir,
-				command: inputValue,
-				result: 'Command Not Found',
-				id: id,
-			});
 			setCommandHistory(newArray);
 		}
 	};
 
+	function updateScroll() {
+		terminalBody.current.scrollTop = terminalBody.current.scrollHeight;
+	}
+
 	return (
 		<div
-			className="bg-background rounded-b-xl h-96 p-4 overflow-y-auto"
+			className="bg-background rounded-b-xl h-96 px-4 pt-4 pb-16 overflow-y-auto"
 			id="TerminalBody"
+			ref={terminalBody}
 		>
 			{commandHistory.map((x) => (
 				<div key={x.id}>
@@ -173,6 +159,7 @@ const TerminalBody = () => {
 						if (e.key === 'Enter') {
 							runCommand(e.target.value);
 							e.target.value = '';
+							updateScroll();
 						}
 					}}
 					autoFocus
