@@ -66,6 +66,7 @@ const TerminalBody = () => {
 					}
 				}
 			} else if (inputValue.startsWith('cat')) {
+				let validCat = 0;
 				let fileToCat = inputValue.split(' ')[1];
 
 				let pathArray = workingDir.split('/');
@@ -77,11 +78,15 @@ const TerminalBody = () => {
 							console.log(file);
 							if (file.fileName === fileToCat) {
 								result = file.fileContent;
+								validCat = 1;
 							}
 						}
 					}
 				}
+
+				result = validCat === 1 ? '' : `cat: no such file: ${fileToCat}`;
 			} else if (inputValue.startsWith('./') && inputValue.endsWith('.sh')) {
+				let validScript = 0;
 				let projectScript = inputValue.substr(2, inputValue.length);
 
 				let pathArray = workingDir.split('/');
@@ -94,10 +99,13 @@ const TerminalBody = () => {
 							if (file.fileName === projectScript) {
 								result = `open ${file.fileContent}`;
 								window.open(file.fileContent, '_blank');
+								validScript = 1;
 							}
 						}
 					}
 				}
+
+				result = validScript === 1 ? '' : `no such file: ${projectScript}`;
 			} else if (!/\S/.test(inputValue)) {
 				result = '';
 			} else {
