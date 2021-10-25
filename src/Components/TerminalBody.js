@@ -161,7 +161,7 @@ const TerminalBody = () => {
 				</span>
 				<input
 					type="text"
-					className="flex-1 block w-full bg-background text-foreground"
+					className="flex-1 block w-full bg-background text-foreground outline-none"
 					onChange={(e) => setCurrentCommand(e.target.value)}
 					onKeyPress={(e) => {
 						if (e.key === 'Enter') {
@@ -170,7 +170,9 @@ const TerminalBody = () => {
 							updateScroll();
 						}
 					}}
-					autoFocus
+					autoFocus={true}
+					onBlur={({ target }) => target.focus()}
+					// ref={(input) => input && input.focus()}
 				/>
 			</div>
 		</div>
