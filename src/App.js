@@ -12,7 +12,7 @@ const App = () => {
 
 	return (
 		<div className="container mx:auto px-4 pt-28 h-screen">
-			<h1 className="text-green text-7xl text-center flex justify-center">
+			<h1 className="text-pink text-7xl text-center flex justify-center">
 				Hello, I'm&nbsp;
 				{finish ? (
 					<Typist avgTypingDelay={150} onTypingDone={() => setFinish(false)}>
