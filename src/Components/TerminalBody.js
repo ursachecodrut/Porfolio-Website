@@ -3,7 +3,6 @@ import { NodesArray } from '../utils/dirsTree';
 
 const TerminalBody = () => {
 	const [workingDir, setWorkingDir] = useState('~');
-	const [currentCommand, setCurrentCommand] = useState('');
 	const [commandHistory, setCommandHistory] = useState([]);
 
 	const terminalBody = useRef(null);
@@ -40,7 +39,6 @@ const TerminalBody = () => {
 						if (item.value === lastDir) {
 							for (let dir of item.dirs) {
 								if (dir.value === dirToCDIn) {
-									console.log(`${workingDir}/${dirToCDIn}`);
 									setWorkingDir(`${workingDir}/${dirToCDIn}`);
 									validCd = 1;
 								}
@@ -75,7 +73,6 @@ const TerminalBody = () => {
 				for (let item of NodesArray) {
 					if (item.value === lastDir) {
 						for (let file of item.files) {
-							console.log(file);
 							if (file.fileName === fileToCat) {
 								result = file.fileContent;
 								validCat = 1;
@@ -95,7 +92,6 @@ const TerminalBody = () => {
 				for (let item of NodesArray) {
 					if (item.value === lastDir) {
 						for (let file of item.files) {
-							console.log(file);
 							if (file.fileName === projectScript) {
 								result = `open ${file.fileContent}`;
 								window.open(file.fileContent, '_blank');
@@ -162,7 +158,6 @@ const TerminalBody = () => {
 				<input
 					type="text"
 					className="flex-1 block w-full bg-background text-foreground outline-none"
-					onChange={(e) => setCurrentCommand(e.target.value)}
 					onKeyPress={(e) => {
 						if (e.key === 'Enter') {
 							runCommand(e.target.value);

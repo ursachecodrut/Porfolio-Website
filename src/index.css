@@ -2,3 +2,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#cursor {
+    border-left: .1em solid #00FF41;
+    animation: blink .7s steps(1) infinite;
+}
+  
+@keyframes blink {
+    50% {
+      border-color: transparent;
+    }
+}
