@@ -127,7 +127,7 @@ const TerminalBody = () => {
 
 	return (
 		<div
-			className="bg-background rounded-b-xl h-96 px-4 pt-4 pb-16 overflow-y-auto"
+			className="bg-background rounded-b-xl text-lg h-96 px-4 pt-4 pb-16 overflow-y-auto"
 			id="TerminalBody"
 			ref={terminalBody}
 		>
@@ -163,6 +163,14 @@ const TerminalBody = () => {
 							runCommand(e.target.value);
 							e.target.value = '';
 							updateScroll();
+						}
+					}}
+					onKeyDown={(e) => {
+						if (e.key === 'ArrowUp') {
+							if (commandHistory.length > 0) {
+								e.target.value =
+									commandHistory[commandHistory.length - 1].command;
+							}
 						}
 					}}
 					autoFocus={true}

@@ -3,7 +3,13 @@ import Terminal from './Components/Terminal';
 import Typist from 'react-typist';
 
 const App = () => {
-	const names = ['Codrut.', 'a Web Developer.', 'a Student.', 'self-taught.'];
+	const sentences = [
+		'Hello, my name is Codrut.',
+		"I'm a Web Developer.",
+		"I'm a Student at UPB, Romania.",
+		'I love React and Javascript!',
+	];
+
 	const [finish, setFinish] = useState(true);
 
 	useEffect(() => {
@@ -12,14 +18,13 @@ const App = () => {
 
 	return (
 		<div className="container mx:auto px-4 pt-28 h-screen">
-			<h1 className="text-pink text-7xl text-center flex justify-center">
-				Hello, I'm&nbsp;
+			<h1 className="text-green text-7xl text-center flex justify-center">
 				{finish ? (
-					<Typist avgTypingDelay={150} onTypingDone={() => setFinish(false)}>
-						{names.map((name, index) => (
+					<Typist avgTypingDelay={100} onTypingDone={() => setFinish(false)}>
+						{sentences.map((item, index) => (
 							<span key={index}>
-								<span>{name}</span>
-								<Typist.Backspace count={name.length} delay={500} />
+								<span>{item}</span>
+								<Typist.Backspace count={item.length} delay={500} />
 							</span>
 						))}
 					</Typist>
