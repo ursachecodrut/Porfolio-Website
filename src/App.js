@@ -17,22 +17,28 @@ const App = () => {
 	}, [finish]);
 
 	return (
-		<div className="container mx:auto px-4 pt-28 h-screen">
-			<h1 className="text-green text-7xl text-center flex justify-center">
-				{finish ? (
-					<Typist avgTypingDelay={100} onTypingDone={() => setFinish(false)}>
-						{sentences.map((item, index) => (
-							<span key={index}>
-								<span>{item}</span>
-								<Typist.Backspace count={item.length} delay={500} />
-							</span>
-						))}
-					</Typist>
-				) : (
-					''
-				)}
-			</h1>
-			<Terminal />
+		<div className="flex flex-col justify-center items-center h-screen">
+			<div>
+				<h1 className="text-green text-7xl text-center flex justify-center">
+					{finish ? (
+						<Typist avgTypingDelay={100} onTypingDone={() => setFinish(false)}>
+							{sentences.map((item, index) => (
+								<span key={index}>
+									<span>{item}</span>
+									<Typist.Backspace count={item.length} delay={500} />
+								</span>
+							))}
+						</Typist>
+					) : (
+						''
+					)}
+				</h1>
+				<div className="text-white font-extralight text-2xl text-center text-opacity-50 my-10">
+					Type <span className="font-semibold">help</span> for displaying all
+					commands available.
+				</div>
+				<Terminal />
+			</div>
 		</div>
 	);
 };

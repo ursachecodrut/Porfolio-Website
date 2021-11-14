@@ -3,7 +3,7 @@ import TerminalBody from './TerminalBody';
 
 const Terminal = () => {
 	return (
-		<div className="grid-cols-1 my-10 px-36" id="Terminal">
+		<div className="grid-cols-1 w-screen px-10 my-10" id="Terminal">
 			<div
 				className="bg-terminalBar text-white rounded-t-xl px-4 h-14 flex flex-wrap content-center justify-between"
 				id="TerminalBar"

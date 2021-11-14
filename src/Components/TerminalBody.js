@@ -147,7 +147,7 @@ const TerminalBody = () => {
 					<div className="text-foreground">{x.result}</div>
 				</div>
 			))}
-			<div className="flex">
+			<div className="flex gap-1">
 				<span className="inline-flex text-green">
 					<span className="inline">codrut@portfolio:</span>
 					<span className="text-purple inline">
