@@ -7,6 +7,14 @@ const TerminalBody = () => {
 
 	const terminalBody = useRef(null);
 
+	const commandsAvaliable = {
+		clear: 'clear the console',
+		cd: 'change the current directory',
+		ls: 'list directory contents',
+		cat: 'print file contents',
+		'./<script_name>.sh': 'run script with name <script_name>',
+	};
+
 	const runCommand = (inputValue) => {
 		let id;
 		let result = '';
@@ -82,6 +90,11 @@ const TerminalBody = () => {
 				}
 
 				result = validCat === 1 ? result : `cat: no such file: ${fileToCat}`;
+			} else if (inputValue.startsWith('help')) {
+				for (let command in commandsAvaliable) {
+					result += `${command}: ${commandsAvaliable[command]}\n`;
+				}
+				console.log(result);
 			} else if (inputValue.startsWith('./') && inputValue.endsWith('.sh')) {
 				let validScript = 0;
 				let projectScript = inputValue.substr(2, inputValue.length);
@@ -144,7 +157,7 @@ const TerminalBody = () => {
 
 						<span className="text-foreground"> {x.command}</span>
 					</div>
-					<div className="text-foreground">{x.result}</div>
+					<div className="text-foreground whitespace-pre">{x.result}</div>
 				</div>
 			))}
 			<div className="flex gap-1">
