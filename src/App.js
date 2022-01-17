@@ -4,10 +4,10 @@ import Typist from 'react-typist';
 
 const App = () => {
 	const sentences = [
-		'Hello, my name is Codrut.',
+		'Hello, my name is Codruț.',
 		"I'm a Web Developer.",
-		"I'm a Student at UPB, Romania.",
-		'I love React and Javascript!',
+		"I'm a CS Student at UPB, Romania.",
+		'I love React and Javascript! <3',
 	];
 
 	const [finish, setFinish] = useState(true);
