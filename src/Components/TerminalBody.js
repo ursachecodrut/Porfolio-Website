@@ -138,8 +138,35 @@ const TerminalBody = () => {
 		terminalBody.current.scrollTop = terminalBody.current.scrollHeight;
 	}
 
+	const getDirContent = () => {
+		const content = [];
+
+		// get last array from working dir string
+		let pathArray = workingDir.split('/');
+		let lastDir = pathArray[pathArray.length - 1];
+
+		for (let item of NodesArray) {
+			if (item.value === lastDir) {
+				// add file names to content array
+				if (item.files.length !== 0) {
+					for (let file of item.files) {
+						content.push(file.fileName);
+					}
+				}
+
+				// add dir names to content array
+				if (item.dirs.length !== 0) {
+					for (let dir of item.dirs) {
+						content.push(dir.value);
+					}
+				}
+			}
+		}
+		return content;
+	};
+
 	const autocomplete = (text) => {
-		console.log('autocomplete');
+		console.log(getDirContent());
 	};
 
 	return (

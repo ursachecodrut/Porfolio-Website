@@ -3,12 +3,7 @@ export class TreeNode {
 		this.value = value;
 		this.parent = null;
 		this.dirs = [];
-		this.files = [
-			{
-				fileName: '',
-				fileContent: '',
-			},
-		];
+		this.files = [];
 	}
 
 	addDir(dirname) {
