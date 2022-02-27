@@ -4,8 +4,10 @@ import { NodesArray } from '../utils/dirsTree';
 const TerminalBody = () => {
 	const [workingDir, setWorkingDir] = useState('~');
 	const [commandHistory, setCommandHistory] = useState([]);
+	const [autocompleteOutput, setAutocompleteOutput] = useState('');
 
 	const terminalBody = useRef(null);
+	const input = useRef(null);
 
 	const commandsAvaliable = {
 		clear: 'clear the console',
@@ -182,7 +184,16 @@ const TerminalBody = () => {
 		}
 
 		if (matches.length === 1) {
-			console.log(matches[0]);
+			input.current.value = `${wordsArray[0]} ${matches[0]}`;
+			setAutocompleteOutput('');
+		} else {
+			let output = '';
+			for (let element of matches) {
+				console.log(element);
+				output += `${element} `;
+			}
+			setAutocompleteOutput(output);
+			output = '';
 		}
 	};
 
@@ -218,6 +229,7 @@ const TerminalBody = () => {
 				</span>
 				<input
 					type="text"
+					ref={input}
 					className="flex-1 block w-full bg-background text-foreground outline-none"
 					onKeyPress={(e) => {
 						if (e.key === 'Enter') {
@@ -240,6 +252,9 @@ const TerminalBody = () => {
 					autoFocus={true}
 					onBlur={({ target }) => target.focus()}
 				/>
+			</div>
+			<div id="autocompleteOutput" className="text-foreground">
+				{autocompleteOutput}
 			</div>
 		</div>
 	);
