@@ -4,8 +4,10 @@ import { NodesArray } from '../utils/dirsTree';
 const TerminalBody = () => {
 	const [workingDir, setWorkingDir] = useState('~');
 	const [commandHistory, setCommandHistory] = useState([]);
+	const [autocompleteOutput, setAutocompleteOutput] = useState('');
 
 	const terminalBody = useRef(null);
+	const input = useRef(null);
 
 	const commandsAvaliable = {
 		clear: 'clear the console',
@@ -138,6 +140,63 @@ const TerminalBody = () => {
 		terminalBody.current.scrollTop = terminalBody.current.scrollHeight;
 	}
 
+	const getDirContent = () => {
+		const content = [];
+
+		// get last array from working dir string
+		let pathArray = workingDir.split('/');
+		let lastDir = pathArray[pathArray.length - 1];
+
+		for (let item of NodesArray) {
+			if (item.value === lastDir) {
+				// add file names to content array
+				if (item.files.length !== 0) {
+					for (let file of item.files) {
+						content.push(file.fileName);
+					}
+				}
+
+				// add dir names to content array
+				if (item.dirs.length !== 0) {
+					for (let dir of item.dirs) {
+						content.push(dir.value);
+					}
+				}
+			}
+		}
+		return content;
+	};
+
+	const autocomplete = (inputValue) => {
+		const content = getDirContent();
+
+		const wordsArray = inputValue.split(' ');
+		const text = wordsArray[wordsArray.length - 1];
+		console.log(text);
+
+		let matches = content.filter((element) => {
+			const regex = new RegExp(`^${text}`, 'gi');
+			return element.match(regex);
+		});
+
+		if (text.length === 0) {
+			matches = [];
+		}
+
+		if (matches.length === 1) {
+			input.current.value = `${wordsArray[0]} ${matches[0]}`;
+			setAutocompleteOutput('');
+		} else {
+			let output = '';
+			for (let element of matches) {
+				console.log(element);
+				output += `${element} `;
+			}
+			setAutocompleteOutput(output);
+			output = '';
+		}
+	};
+
 	return (
 		<div
 			className="bg-background rounded-b-xl text-lg h-96 px-4 pt-4 pb-16 overflow-y-auto"
@@ -170,6 +229,7 @@ const TerminalBody = () => {
 				</span>
 				<input
 					type="text"
+					ref={input}
 					className="flex-1 block w-full bg-background text-foreground outline-none"
 					onKeyPress={(e) => {
 						if (e.key === 'Enter') {
@@ -184,12 +244,17 @@ const TerminalBody = () => {
 								e.target.value =
 									commandHistory[commandHistory.length - 1].command;
 							}
+						} else if (e.key === 'Tab') {
+							e.preventDefault();
+							autocomplete(e.target.value);
 						}
 					}}
 					autoFocus={true}
 					onBlur={({ target }) => target.focus()}
-					// ref={(input) => input && input.focus()}
 				/>
+			</div>
+			<div id="autocompleteOutput" className="text-foreground">
+				{autocompleteOutput}
 			</div>
 		</div>
 	);
