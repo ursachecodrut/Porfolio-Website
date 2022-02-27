@@ -138,6 +138,10 @@ const TerminalBody = () => {
 		terminalBody.current.scrollTop = terminalBody.current.scrollHeight;
 	}
 
+	const autocomplete = (text) => {
+		console.log('autocomplete');
+	};
+
 	return (
 		<div
 			className="bg-background rounded-b-xl text-lg h-96 px-4 pt-4 pb-16 overflow-y-auto"
@@ -184,6 +188,9 @@ const TerminalBody = () => {
 								e.target.value =
 									commandHistory[commandHistory.length - 1].command;
 							}
+						} else if (e.key === 'Tab') {
+							e.preventDefault();
+							autocomplete();
 						}
 					}}
 					autoFocus={true}
