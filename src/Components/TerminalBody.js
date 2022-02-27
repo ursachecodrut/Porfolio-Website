@@ -165,8 +165,25 @@ const TerminalBody = () => {
 		return content;
 	};
 
-	const autocomplete = (text) => {
-		console.log(getDirContent());
+	const autocomplete = (inputValue) => {
+		const content = getDirContent();
+
+		const wordsArray = inputValue.split(' ');
+		const text = wordsArray[wordsArray.length - 1];
+		console.log(text);
+
+		let matches = content.filter((element) => {
+			const regex = new RegExp(`^${text}`, 'gi');
+			return element.match(regex);
+		});
+
+		if (text.length === 0) {
+			matches = [];
+		}
+
+		if (matches.length === 1) {
+			console.log(matches[0]);
+		}
 	};
 
 	return (
@@ -217,12 +234,11 @@ const TerminalBody = () => {
 							}
 						} else if (e.key === 'Tab') {
 							e.preventDefault();
-							autocomplete();
+							autocomplete(e.target.value);
 						}
 					}}
 					autoFocus={true}
 					onBlur={({ target }) => target.focus()}
-					// ref={(input) => input && input.focus()}
 				/>
 			</div>
 		</div>
